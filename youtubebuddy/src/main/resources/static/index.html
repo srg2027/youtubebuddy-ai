@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTubeBuddy AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🎥 YouTubeBuddy AI</h1>
+
+    <input
+            type="text"
+            id="youtubeUrl"
+            placeholder="Paste YouTube URL here">
+
+    <div class="button-group">
+
+        <button onclick="summarizeVideo()">
+            📝 Summarize
+        </button>
+
+        <button onclick="generateKeyPoints()">
+            📌 Key Points
+        </button>
+
+        <button onclick="generateTitles()">
+            🎯 Generate Titles
+        </button>
+        <button onclick="generateDescription()">
+            📄 Description
+        </button>
+        <button onclick="generateTags()">
+            🏷️ Tags
+        </button>
+        <button onclick="generateQuiz()">
+            🧠 Generate Quiz
+        </button>
+
+    </div>
+
+    <div id="loading"></div>
+
+    <div id="summary" class="result-box"></div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
