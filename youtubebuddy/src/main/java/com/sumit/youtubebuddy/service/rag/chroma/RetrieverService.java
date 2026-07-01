@@ -34,7 +34,8 @@ public class RetrieverService {
                 );
 
         return chromaService.search(
-                embedding
+                embedding,
+                question
         );
     }
 }

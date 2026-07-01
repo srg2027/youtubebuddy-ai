@@ -1,11 +1,11 @@
 package com.sumit.youtubebuddy.service;
 
 import com.sumit.youtubebuddy.service.memory.ConversationMemoryService;
+import com.sumit.youtubebuddy.service.prompt.PromptBuilderService;
 import com.sumit.youtubebuddy.service.rag.QueryRewriterService;
 import com.sumit.youtubebuddy.service.rag.chroma.RetrieverService;
 import dev.langchain4j.data.message.ChatMessage;
 import org.springframework.stereotype.Service;
-import com.sumit.youtubebuddy.service.prompt.PromptBuilderService;
 
 import java.util.List;
 
@@ -23,42 +23,46 @@ public class RagChatService {
             QueryRewriterService queryRewriterService,
             GeminiService geminiService,
             PromptBuilderService promptBuilderService,
-
-
             ConversationMemoryService conversationMemoryService
     ) {
         this.retrieverService = retrieverService;
+        this.queryRewriterService = queryRewriterService;
         this.geminiService = geminiService;
         this.promptBuilderService = promptBuilderService;
         this.conversationMemoryService = conversationMemoryService;
-        this.queryRewriterService = queryRewriterService;
     }
 
     public String askQuestion(String question) {
 
-        // Store user's question
+        // =====================================================
+        // 1. Store current user message
+        // =====================================================
         conversationMemoryService.addUserMessage(question);
 
-        // Build retrieval query
+        // =====================================================
+        // 2. Get conversation history
+        // =====================================================
         List<ChatMessage> history =
                 conversationMemoryService.getMessages();
+
+        // =====================================================
+        // 3. Rewrite query for better retrieval
+        // =====================================================
         String retrievalQuery =
                 queryRewriterService.rewrite(
                         history,
                         question
                 );
-        System.out.println("Rewritten Query: " + retrievalQuery);
 
-        // Retrieve relevant context
+        // =====================================================
+        // 4. Retrieve context from Chroma
+        // =====================================================
         String context =
                 retrieverService.retrieve(retrievalQuery);
 
-
-
-        System.out.println("========== MEMORY ==========");
-        System.out.println(history);
-        System.out.println("============================");
-
+        // =====================================================
+        // 5. Build RAG prompt
+        // =====================================================
         String prompt =
                 promptBuilderService.buildRagPrompt(
                         history,
@@ -66,27 +70,38 @@ public class RagChatService {
                         question
                 );
 
-        // Generate answer
-        System.out.println("========== QUESTION ==========");
+        // =====================================================
+        // Debug Logs
+        // =====================================================
+        System.out.println("\n==============================");
+        System.out.println("QUESTION:");
         System.out.println(question);
 
-        System.out.println("========== RETRIEVAL QUERY ==========");
+        System.out.println("\nREWRITTEN QUERY:");
         System.out.println(retrievalQuery);
 
-        System.out.println("========== CONTEXT ==========");
+        System.out.println("\nMEMORY:");
+        history.forEach(System.out::println);
+
+        System.out.println("\nCONTEXT:");
         System.out.println(context);
 
-        System.out.println("========== PROMPT ==========");
+        System.out.println("\nPROMPT:");
         System.out.println(prompt);
+
+        System.out.println("==============================\n");
+
+        // =====================================================
+        // 6. Generate answer
+        // =====================================================
         String answer =
                 geminiService.generateResponse(prompt);
 
-
-        //conversationMemoryService.addUserMessage(question);
+        // =====================================================
+        // 7. Store AI response
+        // =====================================================
         conversationMemoryService.addAiMessage(answer);
 
         return answer;
     }
-
-
 }
