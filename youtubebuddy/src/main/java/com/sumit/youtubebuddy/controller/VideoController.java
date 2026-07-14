@@ -3,6 +3,7 @@ package com.sumit.youtubebuddy.controller;
 
 import com.sumit.youtubebuddy.dto.VideoRequest;
 import com.sumit.youtubebuddy.dto.VideoResponse;
+import com.sumit.youtubebuddy.dto.transcript.TranscriptResponse;
 import com.sumit.youtubebuddy.service.GeminiService;
 import com.sumit.youtubebuddy.service.TranscriptService;
 import com.sumit.youtubebuddy.dto.KeyPointsResponse;
@@ -35,9 +36,13 @@ public class VideoController {
     public VideoResponse summarize(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String summary =
                 geminiService.summarizeVideo(
@@ -49,9 +54,13 @@ public class VideoController {
     public KeyPointsResponse getKeyPoints(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String keyPoints =
                 geminiService.generateKeyPoints(
@@ -64,9 +73,13 @@ public class VideoController {
     public TitleResponse generateTitles(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String titles =
                 geminiService.generateTitles(
@@ -78,9 +91,13 @@ public class VideoController {
     public DescriptionResponse generateDescription(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String description =
                 geminiService.generateDescription(
@@ -92,9 +109,13 @@ public class VideoController {
     public TagResponse generateTags(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String tags =
                 geminiService.generateTags(
@@ -106,9 +127,13 @@ public class VideoController {
     public QuizResponse generateQuiz(
             @RequestBody VideoRequest request) {
 
-        String transcript =
+        TranscriptResponse transcriptResponse =
                 transcriptService.getTranscript(
-                        request.getYoutubeUrl());
+                        request.getYoutubeUrl()
+                );
+
+        String transcript =
+                transcriptResponse.getTranscript();
 
         String quiz =
                 geminiService.generateQuiz(

@@ -1,41 +1,18 @@
 package com.sumit.youtubebuddy.service.rag.chroma;
 
-import com.sumit.youtubebuddy.service.rag.EmbeddingService;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
+import com.sumit.youtubebuddy.dto.rag.RetrievalResult;
 
 @Service
 public class RetrieverService {
 
-    private final EmbeddingService embeddingService;
-    private final ChromaService chromaService;
+    private final GenericRetrieverService genericRetrieverService;
 
-    public RetrieverService(
-            EmbeddingService embeddingService,
-            ChromaService chromaService
-    ) {
-        this.embeddingService = embeddingService;
-        this.chromaService = chromaService;
+    public RetrieverService(GenericRetrieverService genericRetrieverService) {
+        this.genericRetrieverService = genericRetrieverService;
     }
 
-    public String retrieve(
-            String question
-    ) {
-
-        Map embeddingResponse =
-                embeddingService.generateEmbedding(
-                        question
-                );
-
-        Object embedding =
-                embeddingResponse.get(
-                        "embedding"
-                );
-
-        return chromaService.search(
-                embedding,
-                question
-        );
+    public RetrievalResult retrieve(String question) {
+        return genericRetrieverService.retrieve(CollectionType.YOUTUBE, question);
     }
-}
+}

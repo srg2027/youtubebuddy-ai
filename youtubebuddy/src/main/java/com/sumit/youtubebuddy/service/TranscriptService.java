@@ -1,7 +1,7 @@
 package com.sumit.youtubebuddy.service;
 
-import com.sumit.youtubebuddy.dto.TranscriptResponse;
 import com.sumit.youtubebuddy.dto.VideoRequest;
+import com.sumit.youtubebuddy.dto.transcript.TranscriptResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,11 +10,15 @@ public class TranscriptService {
 
     private final RestTemplate restTemplate;
 
-    public TranscriptService(RestTemplate restTemplate) {
+    public TranscriptService(
+            RestTemplate restTemplate
+    ) {
         this.restTemplate = restTemplate;
     }
 
-    public String getTranscript(String youtubeUrl) {
+    public TranscriptResponse getTranscript(
+            String youtubeUrl
+    ) {
 
         VideoRequest request = new VideoRequest();
         request.setYoutubeUrl(youtubeUrl);
@@ -26,6 +30,12 @@ public class TranscriptService {
                         TranscriptResponse.class
                 );
 
-        return response.getTranscript();
+        if (response == null) {
+            throw new RuntimeException(
+                    "Failed to fetch transcript."
+            );
+        }
+
+        return response;
     }
 }

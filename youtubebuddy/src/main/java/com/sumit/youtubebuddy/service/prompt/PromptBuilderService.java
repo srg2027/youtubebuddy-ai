@@ -1,78 +1,76 @@
 package com.sumit.youtubebuddy.service.prompt;
 
-import dev.langchain4j.data.message.AiMessage;
+import com.sumit.youtubebuddy.dto.prompt.PromptTemplate;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.UserMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class PromptBuilderService {
+
+    private final SystemPromptService systemPromptService;
+    private final LanguageInstructionService languageInstructionService;
+    private final MemoryFormatter memoryFormatter;
+    private final ContextFormatter contextFormatter;
+    private final HallucinationGuardService hallucinationGuardService;
+    private final ResponseFormatterService responseFormatterService;
+    private final PromptRenderer promptRenderer;
+
+    public PromptBuilderService(
+            SystemPromptService systemPromptService,
+            LanguageInstructionService languageInstructionService,
+            MemoryFormatter memoryFormatter,
+            ContextFormatter contextFormatter,
+            HallucinationGuardService hallucinationGuardService,
+            ResponseFormatterService responseFormatterService,
+            PromptRenderer promptRenderer
+    ) {
+        this.systemPromptService = systemPromptService;
+        this.languageInstructionService = languageInstructionService;
+        this.memoryFormatter = memoryFormatter;
+        this.contextFormatter = contextFormatter;
+        this.hallucinationGuardService = hallucinationGuardService;
+        this.responseFormatterService = responseFormatterService;
+        this.promptRenderer = promptRenderer;
+    }
+
     public String buildRagPrompt(
             List<ChatMessage> history,
             String context,
             String question
     ) {
 
-        String conversation =
-                formatConversation(history);
+        PromptTemplate promptTemplate = new PromptTemplate();
 
-        return """
-        You are a helpful AI assistant.
+        promptTemplate.setSystemPrompt(
+                systemPromptService.getSystemPrompt()
+        );
 
-        Use ONLY the provided context.
+        promptTemplate.setLanguageInstruction(
+                languageInstructionService.buildLanguageInstruction(question)
+        );
 
-        If the answer is not available
-        in the context, say:
+        promptTemplate.setHallucinationGuard(
+                hallucinationGuardService.getInstructions()
+        );
 
-        "I could not find this information
-        in the video."
+        promptTemplate.setResponseFormatting(
+                responseFormatterService.getInstructions()
+        );
 
-        Answer in the same language
-        that the user asked the question,
-        unless the user explicitly requests
-        another language.
+        promptTemplate.setConversationHistory(
+                memoryFormatter.format(history)
+        );
 
-        Conversation History:
-        %s
+        promptTemplate.setRetrievedContext(
+                contextFormatter.format(context)
+        );
 
-        Retrieved Context:
-        %s
+        promptTemplate.setCurrentQuestion(
+                question
+        );
 
-        Current Question:
-        %s
-        """
-                .formatted(
-                        conversation,
-                        context,
-                        question
-                );
+        return promptRenderer.render(promptTemplate);
     }
-    private String formatConversation(
-            List<ChatMessage> history
-    ) {
-
-        StringBuilder builder =
-                new StringBuilder();
-
-        for (ChatMessage message : history) {
-
-            builder.append(message.type())
-                    .append(": ");
-
-            if (message instanceof UserMessage userMessage) {
-                builder.append(userMessage.singleText());
-            } else if (message instanceof AiMessage aiMessage) {
-                builder.append(aiMessage.text());
-            } else {
-                builder.append(message.toString());
-            }
-
-            builder.append("\n");
-        }
-
-        return builder.toString();
-    }
-
 }

@@ -1,6 +1,6 @@
 package com.sumit.youtubebuddy.service.rag;
 
-import com.sumit.youtubebuddy.service.GeminiService;
+import com.sumit.youtubebuddy.service.model.ModelRouterService;
 import dev.langchain4j.data.message.ChatMessage;
 import org.springframework.stereotype.Service;
 
@@ -9,18 +9,25 @@ import java.util.List;
 @Service
 public class QueryRewriterService {
 
-    private final GeminiService geminiService;
+    private final ModelRouterService modelRouterService;
 
-    public QueryRewriterService(GeminiService geminiService) {
-        this.geminiService = geminiService;
+    public QueryRewriterService(
+            ModelRouterService modelRouterService
+    ) {
+        this.modelRouterService = modelRouterService;
     }
 
-    public String rewrite(List<ChatMessage> history, String question) {
+    public String rewrite(
+            List<ChatMessage> history,
+            String question
+    ) {
 
-        StringBuilder conversation = new StringBuilder();
+        StringBuilder conversation =
+                new StringBuilder();
 
         for (ChatMessage message : history) {
-            conversation.append(message.toString())
+            conversation
+                    .append(message.toString())
                     .append("\n");
         }
 
@@ -51,6 +58,8 @@ public class QueryRewriterService {
                 question
         );
 
-        return geminiService.generateResponse(prompt).trim();
+        return modelRouterService
+                .generateResponse(prompt)
+                .trim();
     }
 }

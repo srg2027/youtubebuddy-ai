@@ -59,7 +59,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -70,6 +70,29 @@
 
 
 
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.30</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.17.2</version>
+		</dependency>
+
+		<!-- LangGraph 4j Dependencies -->
+		<dependency>
+			<groupId>org.bsc.langgraph4j</groupId>
+			<artifactId>langgraph4j-core</artifactId>
+			<version>1.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bsc.langgraph4j</groupId>
+			<artifactId>langgraph4j-langchain4j</artifactId>
+			<version>1.5.12</version>
+		</dependency>
 
 	</dependencies>
 

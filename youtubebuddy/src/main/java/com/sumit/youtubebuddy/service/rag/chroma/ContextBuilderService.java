@@ -10,7 +10,7 @@ import java.util.Set;
 @Service
 public class ContextBuilderService {
 
-    private static final double MAX_DISTANCE = 0.75;
+    private static final double MAX_DISTANCE = 1.5;
     private static final int MAX_CONTEXT_LENGTH = 4000;
 
     public String buildContext(List<ChromaResult> results) {
